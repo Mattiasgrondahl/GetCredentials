@@ -115,6 +115,7 @@ $Body = @{
     ip=$env:HostIP
     }
 $Body = $Body | ConvertTo-Json
+sleep 1
 $Object = ConvertFrom-Json –InputObject $Body
 
 ###Run
