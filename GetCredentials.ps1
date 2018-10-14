@@ -32,10 +32,7 @@ Param(
    [string]$output,
 	
    [Parameter(Mandatory=$False,Position=2)]
-   [string]$url,
-
-   [Parameter(Mandatory=$False,Position=3)]
-   [string]$demo
+   [string]$url
 )
 
 #Suppress Errors (set to Continue to show errors on run)
@@ -47,13 +44,6 @@ $date = (Get-Date).ToString('yyyy-MM-dd_HHmm')
 #for demo
 $output = "C:\temp\" + "$date" + "out.log"
 $url = "http://192.168.1.174/data"
-
-#demo
-if ($demo -eq "demo") {
-    $output = "C:\temp\out"
-    $url = "http://192.168.1.174/data"
-}
-
 
 function Getcreds {
 [void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]
