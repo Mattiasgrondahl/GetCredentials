@@ -116,8 +116,7 @@ $Body = @{
     }
 $Body = $Body | ConvertTo-Json
 sleep 1
-$Object = ConvertFrom-Json –InputObject $Body
-
+$Object = $Body | ConvertTo-Json
 ###Run
 log($Body)
 if ($url -ne "") {
